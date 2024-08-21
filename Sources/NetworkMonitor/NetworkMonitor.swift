@@ -5,6 +5,15 @@ import SwiftUI
 import Network
 import Observation
 
+/**
+ Network monitor to observe changes to network connection.
+ 
+ - Returns
+    - isConnected: status of connection to Internet (true/false)
+    - isExpensive: connection is via cellular or hotspot wifi (true/false)
+    - isConstrained: connection is Low Data Mode (true/false)
+    - connectionType: type of connection (cellular/wifi/wiredEthernet)
+ */
 @Observable public class NetworkMonitor {
     @ObservationIgnored private let monitor = NWPathMonitor()
     @ObservationIgnored private let queue = DispatchQueue(label: "NWMonitor")
@@ -18,7 +27,7 @@ import Observation
         monitor.pathUpdateHandler = { path in
             self.isConnected = path.status == .satisfied
             self.isExpensive = path.isExpensive
-            self.isConstrained = path.isConstrained // Low Data Mode
+            self.isConstrained = path.isConstrained
             
             let connectionTypes: [NWInterface.InterfaceType] = [
                 .cellular,
