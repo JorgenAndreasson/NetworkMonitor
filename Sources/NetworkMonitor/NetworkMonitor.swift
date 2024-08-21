@@ -3,11 +3,12 @@
 
 import SwiftUI
 import Network
+import Observation
 
-@Observable
-public class NetworkMonitor: ObservableObject {
-    private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "NWMonitor")
+@Observable public class NetworkMonitor {
+    @ObservationIgnored private let monitor = NWPathMonitor()
+    @ObservationIgnored private let queue = DispatchQueue(label: "NWMonitor")
+    
     var isConnected = false
     var isExpensive = false
     var isConstrained = false
@@ -24,10 +25,6 @@ public class NetworkMonitor: ObservableObject {
                 .wifi,
                 .wiredEthernet]
             self.connectionType = connectionTypes.first(where: path.usesInterfaceType) ?? .other
-            
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
-            }
         }
         
         monitor.start(queue: queue)
